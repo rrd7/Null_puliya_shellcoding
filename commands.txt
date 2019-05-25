@@ -1,0 +1,46 @@
+- nasm -f elf32 program.nasm -o program.o
+
+- ld program.o -o program
+
+gdb 
+
+	- set disassembly-flavor intel
+	- break _start
+	- run
+	- print /x $eax
+	- print /x &var
+	- define hook-stop
+		- print /x $eax
+		- print /x $ebx
+		- print /x $ecx
+		- print /x $edx
+		- x/8xb memory address
+		- disassemble $eip,+10
+	- end
+	- shell cat program.nasm
+	- quit
+
+
+
+- objdump -d binary -M intel
+
+- ./shellcodedump executable
+
+- gcc -fno-stack-protector -z execstack shellcode.c -o shellcode
+
+- '//bin/sh'[::-1].encode ('hex')
+
+gdb 
+
+	- set disassembly-flavor intel
+	- break main
+	- run
+	- print /x $eax
+	- print /x &code
+	- define hook-stop
+		- print /x $eax
+		- x/20xb $esp
+		- disassemble $eip,+10
+	- end
+	- shell cat shellcode.c
+	- quit
